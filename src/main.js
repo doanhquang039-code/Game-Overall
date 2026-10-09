@@ -7,6 +7,7 @@ import { renderGameControls } from './components/gameControls.js';
 import { showRulesModal } from './components/rulesModal.js';
 import { showStatsModal } from './components/statsModal.js';
 import { showSettingsModal } from './components/settingsModal.js';
+import { showMobileModal } from './components/mobileModal.js';
 
 import { ChessUI } from './games/chess/chessUI.js';
 import { XiangqiUI } from './games/xiangqi/xiangqiUI.js';
@@ -121,6 +122,9 @@ class ChessverseApp {
       },
       onShowStats: () => {
         showStatsModal();
+      },
+      onShowMobile: () => {
+        showMobileModal();
       },
       onShowSettings: () => {
         showSettingsModal(() => {

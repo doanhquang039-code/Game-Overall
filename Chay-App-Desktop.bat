@@ -1,4 +1,4 @@
-@echo off
+ @echo off
 chcp 65001 >nul
 title CHESSVERSE - Đang Khởi Động Ứng Dụng Desktop...
 cd /d "%~dp0"

@@ -787,4 +787,166 @@ input:checked + .slider-round:before {
   .stats-overview-grid { grid-template-columns: repeat(2, 1fr); }
   .setting-item { flex-direction: column; align-items: flex-start; }
   .setting-control-col { width: 100%; display: flex; justify-content: flex-end; }
+  .qr-code-section { flex-direction: column; text-align: center; }
+  .url-copy-box { flex-direction: column; }
+}
+
+/* =========================================================
+   MOBILE / ANDROID MODAL STYLES
+   ========================================================= */
+.mobile-modal-card {
+  max-width: 620px;
+}
+
+.mobile-modal-body {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.qr-code-section {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  background: var(--bg-tertiary);
+  border: 1px solid var(--border-color);
+  border-radius: 14px;
+  padding: 16px;
+}
+
+.qr-box {
+  background: #ffffff;
+  padding: 8px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.35);
+  flex-shrink: 0;
+}
+
+.qr-img {
+  width: 140px;
+  height: 140px;
+  display: block;
+}
+
+.qr-info {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.qr-title {
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: var(--accent-gold);
+}
+
+.qr-desc {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  line-height: 1.5;
+}
+
+.url-copy-box {
+  display: flex;
+  gap: 8px;
+  margin-top: 4px;
+}
+
+.url-input {
+  flex: 1;
+  background: var(--bg-primary);
+  border: 1px solid var(--border-color);
+  color: var(--text-main);
+  padding: 8px 12px;
+  border-radius: 8px;
+  font-size: 0.85rem;
+  font-family: monospace;
+}
+
+.copy-btn {
+  padding: 8px 14px;
+  font-size: 0.82rem;
+  white-space: nowrap;
+}
+
+.guide-heading {
+  font-size: 0.95rem;
+  color: var(--text-main);
+  margin-bottom: 8px;
+}
+
+.steps-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.step-card {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  background: var(--bg-tertiary);
+  border: 1px solid var(--border-color);
+  border-radius: 10px;
+  padding: 10px 14px;
+}
+
+.step-num {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: var(--accent-gold);
+  color: #111;
+  font-weight: 800;
+  font-size: 0.85rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.step-content strong {
+  font-size: 0.9rem;
+  color: var(--text-main);
+}
+
+.step-content p {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  margin-top: 2px;
+}
+
+.native-apk-note {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  background: rgba(16, 185, 129, 0.1);
+  border: 1px solid rgba(16, 185, 129, 0.3);
+  border-radius: 12px;
+  padding: 12px 14px;
+}
+
+.apk-icon {
+  font-size: 1.6rem;
+}
+
+.apk-info strong {
+  font-size: 0.9rem;
+  color: #10b981;
+}
+
+.apk-info p {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  margin-top: 3px;
+}
+
+.apk-info code {
+  background: rgba(0, 0, 0, 0.3);
+  padding: 2px 6px;
+  border-radius: 4px;
+  color: #fbbf24;
 }

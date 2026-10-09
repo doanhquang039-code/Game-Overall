@@ -78,6 +78,12 @@ export function renderGameControls(container, handlers) {
           </div>
         </div>
 
+        <!-- Android / Mobile QR modal button -->
+        <button class="action-btn secondary-btn" id="btn-mobile" title="Chơi & Cài đặt trên điện thoại Android">
+          <span class="btn-icon">📱</span>
+          <span>Android / ĐT</span>
+        </button>
+
         <!-- Settings Modal Button -->
         <button class="action-btn secondary-btn" id="btn-settings" title="${t('settings')}">
           <span class="btn-icon">⚙️</span>
@@ -172,6 +178,9 @@ export function renderGameControls(container, handlers) {
       });
     });
   }
+
+  const mobileBtn = container.querySelector('#btn-mobile');
+  if (mobileBtn) mobileBtn.addEventListener('click', () => handlers.onShowMobile && handlers.onShowMobile());
 
   const settingsBtn = container.querySelector('#btn-settings');
   if (settingsBtn) settingsBtn.addEventListener('click', () => handlers.onShowSettings && handlers.onShowSettings());
