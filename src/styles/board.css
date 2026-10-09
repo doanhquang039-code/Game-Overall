@@ -1,0 +1,933 @@
+/* =========================================================
+   BOARD STYLES & PIECES RENDERING (ALL 7 GAMES)
+   ========================================================= */
+
+/* Board Scale Modifiers (for Accessibility & All Ages) */
+[data-scale="compact"] {
+  --board-max-size: 460px;
+  --board-vmin: 65vmin;
+  --token-scale: 0.88;
+}
+
+:root,
+[data-scale="standard"] {
+  --board-max-size: 540px;
+  --board-vmin: 74vmin;
+  --token-scale: 1;
+}
+
+[data-scale="large"] {
+  --board-max-size: 640px;
+  --board-vmin: 84vmin;
+  --token-scale: 1.15;
+}
+
+/* Common Player Bars */
+.player-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 18px;
+  background: var(--bg-card);
+  backdrop-filter: blur(10px);
+  border: 1px solid var(--border-color);
+  border-radius: 14px;
+  margin: 6px 0;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.2);
+  transition: all 0.25s ease;
+}
+
+.player-info {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.player-avatar {
+  font-size: 1.5rem;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--bg-tertiary);
+  border-radius: 50%;
+  border: 1px solid var(--border-color);
+}
+
+.player-name {
+  font-weight: 700;
+  font-size: 1rem;
+  color: var(--text-main);
+}
+
+.player-score,
+.player-sub {
+  font-size: 0.82rem;
+  color: var(--text-muted);
+}
+
+.player-captured {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  min-height: 20px;
+  align-items: center;
+}
+
+.cap-piece-icon svg {
+  width: 22px;
+  height: 22px;
+  filter: drop-shadow(0 2px 4px rgba(0,0,0,0.4));
+}
+
+.player-turn-indicator {
+  font-size: 0.85rem;
+  font-weight: 700;
+  padding: 6px 14px;
+  border-radius: 20px;
+  background: var(--bg-tertiary);
+  color: var(--text-muted);
+  border: 1px solid transparent;
+  transition: all 0.3s ease;
+}
+
+.player-turn-indicator.active {
+  background: linear-gradient(135deg, #10b981, #059669);
+  color: #fff;
+  box-shadow: 0 0 14px rgba(16, 185, 129, 0.55);
+  animation: pulse-turn 2s infinite ease-in-out;
+}
+
+.player-turn-indicator.thinking {
+  background: linear-gradient(135deg, #f59e0b, #d97706);
+  color: #fff;
+  animation: pulse-think 1s infinite alternate;
+}
+
+@keyframes pulse-turn {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.04); }
+}
+
+@keyframes pulse-think {
+  from { opacity: 0.75; transform: scale(0.98); }
+  to { opacity: 1; transform: scale(1.02); }
+}
+
+/* =========================================================
+   1. CHESS 8x8 BOARD
+   ========================================================= */
+.chess-board-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 6px 0;
+}
+
+.chess-board {
+  display: grid;
+  grid-template-columns: repeat(8, 1fr);
+  grid-template-rows: repeat(8, 1fr);
+  width: min(var(--board-vmin), var(--board-max-size));
+  height: min(var(--board-vmin), var(--board-max-size));
+  border: 8px solid var(--chess-border);
+  border-radius: 12px;
+  box-shadow: 0 12px 35px rgba(0, 0, 0, 0.5);
+  user-select: none;
+  background: var(--chess-dark);
+}
+
+.chess-square {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background-color 0.15s ease;
+}
+
+.chess-square.light { background-color: var(--chess-light); }
+.chess-square.dark { background-color: var(--chess-dark); }
+
+.chess-square.selected {
+  background-color: var(--chess-selected) !important;
+  box-shadow: inset 0 0 0 3px var(--accent-gold);
+}
+
+.chess-square.in-check {
+  background: radial-gradient(circle, rgba(239, 68, 68, 0.9) 0%, rgba(185, 28, 28, 0.6) 70%) !important;
+  animation: check-pulse 1s infinite alternate;
+}
+
+@keyframes check-pulse {
+  from { box-shadow: inset 0 0 15px rgba(239, 68, 68, 0.8); }
+  to { box-shadow: inset 0 0 25px rgba(239, 68, 68, 1); }
+}
+
+.chess-square.has-move::after {
+  content: '';
+  position: absolute;
+  width: 28%;
+  height: 28%;
+  background: var(--chess-hint);
+  border-radius: 50%;
+  box-shadow: 0 0 8px var(--chess-hint);
+  z-index: 5;
+  pointer-events: none;
+}
+
+.chess-square.has-capture::after {
+  content: '';
+  position: absolute;
+  width: 80%;
+  height: 80%;
+  border: 4px solid rgba(239, 68, 68, 0.7);
+  border-radius: 50%;
+  box-shadow: 0 0 10px rgba(239, 68, 68, 0.5);
+  z-index: 5;
+  pointer-events: none;
+}
+
+.chess-piece {
+  width: 88%;
+  height: 88%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2;
+  transition: transform 0.15s ease;
+}
+
+.chess-piece svg {
+  width: 100%;
+  height: 100%;
+  filter: drop-shadow(0 3px 5px rgba(0, 0, 0, 0.35));
+}
+
+.chess-square:hover .chess-piece {
+  transform: scale(1.1);
+}
+
+.coord-label {
+  position: absolute;
+  font-size: 0.68rem;
+  font-weight: 700;
+  pointer-events: none;
+  opacity: 0.75;
+}
+
+.rank-label { top: 2px; left: 3px; color: #4b5563; }
+.file-label { bottom: 2px; right: 3px; color: #4b5563; }
+
+/* Promotion Modal */
+.promotion-modal {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.7);
+  backdrop-filter: blur(6px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 100;
+}
+
+.promotion-modal.hidden { display: none; }
+
+.modal-dialog {
+  background: var(--bg-secondary);
+  border: 2px solid var(--accent-gold);
+  border-radius: 16px;
+  padding: 24px;
+  text-align: center;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.6);
+}
+
+.modal-dialog h3 {
+  margin-bottom: 16px;
+  color: var(--text-main);
+}
+
+.promotion-pieces {
+  display: flex;
+  gap: 16px;
+  justify-content: center;
+}
+
+.promo-btn {
+  width: 68px;
+  height: 68px;
+  border-radius: 14px;
+  background: var(--bg-tertiary);
+  border: 2px solid var(--border-color);
+  cursor: pointer;
+  padding: 8px;
+  transition: all 0.2s;
+}
+
+.promo-btn:hover {
+  transform: translateY(-4px) scale(1.1);
+  border-color: var(--accent-gold);
+  box-shadow: 0 0 15px var(--accent-glow);
+}
+
+/* =========================================================
+   2. XIANGQI (CỜ TƯỚNG) 9x10 BOARD
+   ========================================================= */
+.xiangqi-board-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 6px 0;
+}
+
+.xiangqi-board {
+  position: relative;
+  width: min(var(--board-vmin), var(--board-max-size));
+  height: calc(min(var(--board-vmin), var(--board-max-size)) * 1.12);
+  background: var(--xq-board-bg);
+  border: 8px solid var(--xq-token-border);
+  border-radius: 12px;
+  box-shadow: 0 12px 35px rgba(0, 0, 0, 0.5);
+  box-sizing: border-box;
+}
+
+.river-banner {
+  position: absolute;
+  top: 40%;
+  height: 10%;
+  left: 0;
+  right: 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  background: var(--xq-river-color);
+  border-top: 2px solid var(--xq-line-color);
+  border-bottom: 2px solid var(--xq-line-color);
+  pointer-events: none;
+  font-family: 'Ma Shan Zheng', 'Noto Serif TC', serif;
+  color: var(--xq-line-color);
+}
+
+.river-text {
+  font-size: 1.6rem;
+  font-weight: 700;
+  letter-spacing: 4px;
+}
+
+.river-center-text {
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 2px;
+}
+
+.xq-grid-points {
+  position: absolute;
+  inset: 12px;
+  display: grid;
+  grid-template-columns: repeat(9, 1fr);
+  grid-template-rows: repeat(10, 1fr);
+}
+
+.xq-point {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.xq-point::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 0;
+  right: 0;
+  height: 1.5px;
+  background: var(--xq-line-color);
+  z-index: 1;
+}
+
+.xq-point::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  top: 0;
+  bottom: 0;
+  width: 1.5px;
+  background: var(--xq-line-color);
+  z-index: 1;
+}
+
+.xq-point.selected .xq-token {
+  box-shadow: 0 0 0 4px #fbbf24, 0 0 20px rgba(251, 191, 36, 0.8) !important;
+  transform: scale(1.12);
+}
+
+.xq-point.has-move::after {
+  content: '';
+  position: absolute;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: #3b82f6;
+  box-shadow: 0 0 10px #3b82f6;
+  z-index: 10;
+}
+
+.xq-point.has-capture .xq-token {
+  animation: capture-target 0.8s infinite alternate;
+}
+
+@keyframes capture-target {
+  from { filter: drop-shadow(0 0 4px #ef4444); }
+  to { filter: drop-shadow(0 0 14px #ef4444); }
+}
+
+.xq-point.in-check .xq-token {
+  animation: xq-check 0.6s infinite alternate;
+}
+
+@keyframes xq-check {
+  from { box-shadow: 0 0 10px #dc2626; }
+  to { box-shadow: 0 0 25px #ef4444; }
+}
+
+/* Xiangqi Token Styles */
+.xq-token {
+  position: relative;
+  width: 88%;
+  height: 88%;
+  border-radius: 50%;
+  background: var(--xq-token-bg);
+  border: 2px solid var(--xq-token-border);
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.4), inset 0 2px 4px rgba(255, 255, 255, 0.3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 5;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+  cursor: pointer;
+}
+
+.xq-token-inner {
+  width: 82%;
+  height: 82%;
+  border-radius: 50%;
+  border: 1.5px dashed;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.red-token { border-color: #991b1b; }
+.red-token .xq-token-inner { border-color: #dc2626; }
+.red-token .xq-char, .red-token .xq-vn-text {
+  color: #b91c1c;
+  text-shadow: 0 1px 1px rgba(255,255,255,0.6);
+}
+
+.black-token { border-color: #1e293b; }
+.black-token .xq-token-inner { border-color: #334155; }
+.black-token .xq-char, .black-token .xq-vn-text {
+  color: #0f172a;
+  text-shadow: 0 1px 1px rgba(255,255,255,0.6);
+}
+
+.xq-char {
+  font-family: 'Ma Shan Zheng', 'Noto Serif TC', serif;
+  font-size: clamp(1rem, 2.8vmin, 1.45rem);
+  font-weight: 700;
+  line-height: 1;
+}
+
+.xq-vn-text {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: clamp(0.65rem, 1.8vmin, 0.88rem);
+  font-weight: 800;
+  letter-spacing: -0.5px;
+}
+
+.style-both .xq-char {
+  font-size: clamp(0.85rem, 2.2vmin, 1.15rem);
+}
+
+.style-both .xq-sub-vn {
+  font-size: clamp(0.5rem, 1.2vmin, 0.65rem);
+  font-weight: 800;
+  line-height: 1;
+  letter-spacing: -0.3px;
+  opacity: 0.85;
+}
+
+.xq-cap-badge {
+  display: inline-block;
+  font-size: 0.8rem;
+  font-weight: 700;
+  padding: 1px 6px;
+  border-radius: 4px;
+  margin: 1px;
+}
+
+.red-badge {
+  background: rgba(220, 38, 38, 0.2);
+  color: #ef4444;
+  border: 1px solid rgba(220, 38, 38, 0.4);
+}
+
+.black-badge {
+  background: rgba(15, 23, 42, 0.4);
+  color: #cbd5e1;
+  border: 1px solid rgba(148, 163, 184, 0.3);
+}
+
+/* =========================================================
+   3. GOMOKU / CỜ CARO 15x15 BOARD
+   ========================================================= */
+.caro-board-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 6px 0;
+}
+
+.caro-board {
+  position: relative;
+  display: grid;
+  width: min(var(--board-vmin), var(--board-max-size));
+  height: min(var(--board-vmin), var(--board-max-size));
+  background: var(--caro-bg);
+  border: 6px solid var(--caro-line);
+  border-radius: 10px;
+  box-shadow: 0 12px 35px rgba(0, 0, 0, 0.5);
+  padding: 10px;
+  box-sizing: border-box;
+}
+
+.caro-cell {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.caro-cell::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: var(--caro-line);
+}
+
+.caro-cell::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  top: 0;
+  bottom: 0;
+  width: 1px;
+  background: var(--caro-line);
+}
+
+.caro-star-point {
+  position: absolute;
+  width: 6px;
+  height: 6px;
+  background: var(--caro-line);
+  border-radius: 50%;
+  z-index: 2;
+}
+
+.caro-stone {
+  position: relative;
+  width: 82%;
+  height: 82%;
+  border-radius: 50%;
+  z-index: 5;
+  transition: transform 0.15s ease;
+}
+
+.stone-x {
+  background: radial-gradient(circle at 35% 35%, #475569, #0f172a 70%);
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.6), inset 0 2px 2px rgba(255, 255, 255, 0.3);
+}
+
+.stone-o {
+  background: radial-gradient(circle at 35% 35%, #ffffff, #cbd5e1 70%, #94a3b8);
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.4), inset 0 2px 3px rgba(255, 255, 255, 0.8);
+}
+
+.last-placed::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #ef4444;
+  box-shadow: 0 0 6px #ef4444;
+}
+
+.winning-stone {
+  animation: winning-pulse 1s infinite alternate;
+  box-shadow: 0 0 0 4px #fbbf24, 0 0 20px #fbbf24 !important;
+  z-index: 10;
+}
+
+@keyframes winning-pulse {
+  from { transform: scale(1); filter: brightness(1); }
+  to { transform: scale(1.15); filter: brightness(1.3); }
+}
+
+/* =========================================================
+   4. OTHELLO (CỜ LẬT) 8x8 BOARD
+   ========================================================= */
+.othello-board-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 6px 0;
+}
+
+.othello-board {
+  position: relative;
+  display: grid;
+  grid-template-columns: repeat(8, 1fr);
+  grid-template-rows: repeat(8, 1fr);
+  width: min(var(--board-vmin), var(--board-max-size));
+  height: min(var(--board-vmin), var(--board-max-size));
+  background: var(--oth-bg);
+  border: 6px solid var(--oth-line);
+  border-radius: 10px;
+  box-shadow: 0 12px 35px rgba(0, 0, 0, 0.5);
+  box-sizing: border-box;
+}
+
+.othello-cell {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--oth-line);
+  cursor: pointer;
+}
+
+.oth-guide-dot {
+  position: absolute;
+  width: 6px;
+  height: 6px;
+  background: var(--oth-line);
+  border-radius: 50%;
+  z-index: 1;
+}
+
+.othello-disc {
+  position: relative;
+  width: 82%;
+  height: 82%;
+  border-radius: 50%;
+  z-index: 5;
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.disc-b {
+  background: radial-gradient(circle at 35% 35%, #334155, #020617 75%);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.6);
+}
+
+.disc-w {
+  background: radial-gradient(circle at 35% 35%, #ffffff, #e2e8f0 75%);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4);
+}
+
+.othello-valid-hint {
+  position: absolute;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.25);
+  border: 1.5px dashed rgba(255, 255, 255, 0.6);
+  color: #fff;
+  font-size: 0.75rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+  animation: hint-glow 1.5s infinite alternate;
+}
+
+@keyframes hint-glow {
+  from { transform: scale(0.9); opacity: 0.6; }
+  to { transform: scale(1.05); opacity: 1; }
+}
+
+/* =========================================================
+   5. CỜ GÁNH (5x5 VIETNAMESE TRADITIONAL) BOARD
+   ========================================================= */
+.coganh-board-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 6px 0;
+}
+
+.coganh-board {
+  position: relative;
+  width: min(var(--board-vmin), var(--board-max-size));
+  height: min(var(--board-vmin), var(--board-max-size));
+  background: var(--cg-bg);
+  border: 6px solid var(--cg-line);
+  border-radius: 12px;
+  box-shadow: 0 12px 35px rgba(0, 0, 0, 0.5);
+  box-sizing: border-box;
+}
+
+.coganh-lines {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  color: var(--cg-line);
+  pointer-events: none;
+}
+
+.cg-points-grid {
+  position: absolute;
+  inset: 10%;
+}
+
+.cg-point {
+  position: absolute;
+  transform: translate(-50%, -50%);
+  width: 38px;
+  height: 38px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 5;
+}
+
+.cg-point.selected .cg-token {
+  box-shadow: 0 0 0 4px #fbbf24, 0 0 18px rgba(251, 191, 36, 0.8) !important;
+  transform: scale(1.15);
+}
+
+.cg-point.has-move::after {
+  content: '';
+  position: absolute;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: #3b82f6;
+  box-shadow: 0 0 8px #3b82f6;
+}
+
+.cg-token {
+  position: relative;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.5);
+  transition: transform 0.2s ease;
+}
+
+.blue-token {
+  background: radial-gradient(circle at 35% 35%, #38bdf8, #0369a1);
+  border: 2px solid #0284c7;
+}
+
+.red-token {
+  background: radial-gradient(circle at 35% 35%, #f87171, #b91c1c);
+  border: 2px solid #dc2626;
+}
+
+.just-ganh {
+  animation: ganh-flash 1s infinite alternate;
+}
+
+@keyframes ganh-flash {
+  from { box-shadow: 0 0 10px #fbbf24; }
+  to { box-shadow: 0 0 25px #f59e0b; }
+}
+
+.just-vay {
+  animation: vay-flash 1s infinite alternate;
+}
+
+@keyframes vay-flash {
+  from { box-shadow: 0 0 10px #a855f7; }
+  to { box-shadow: 0 0 25px #c084fc; }
+}
+
+/* =========================================================
+   6. GO (CỜ VÂY 9x9) BOARD
+   ========================================================= */
+.go-board-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 6px 0;
+}
+
+.go-board {
+  position: relative;
+  display: grid;
+  width: min(var(--board-vmin), var(--board-max-size));
+  height: min(var(--board-vmin), var(--board-max-size));
+  background: var(--caro-bg);
+  border: 6px solid var(--caro-line);
+  border-radius: 10px;
+  box-shadow: 0 12px 35px rgba(0, 0, 0, 0.5);
+  padding: 12px;
+  box-sizing: border-box;
+}
+
+.go-cell {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.go-cell::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 0;
+  right: 0;
+  height: 1.5px;
+  background: var(--caro-line);
+}
+
+.go-cell::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  top: 0;
+  bottom: 0;
+  width: 1.5px;
+  background: var(--caro-line);
+}
+
+.go-star-point {
+  position: absolute;
+  width: 7px;
+  height: 7px;
+  background: var(--caro-line);
+  border-radius: 50%;
+  z-index: 2;
+}
+
+.go-stone {
+  position: relative;
+  width: 86%;
+  height: 86%;
+  border-radius: 50%;
+  z-index: 5;
+  transition: transform 0.15s ease;
+}
+
+.go-action-bar {
+  display: flex;
+  justify-content: center;
+  margin: 6px 0;
+}
+
+/* =========================================================
+   7. CHECKERS (CỜ ĐAM 8x8) BOARD
+   ========================================================= */
+.checkers-board-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 6px 0;
+}
+
+.checkers-board {
+  display: grid;
+  grid-template-columns: repeat(8, 1fr);
+  grid-template-rows: repeat(8, 1fr);
+  width: min(var(--board-vmin), var(--board-max-size));
+  height: min(var(--board-vmin), var(--board-max-size));
+  border: 8px solid var(--chess-border);
+  border-radius: 12px;
+  box-shadow: 0 12px 35px rgba(0, 0, 0, 0.5);
+  box-sizing: border-box;
+}
+
+.checkers-cell {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.checkers-cell.light { background-color: var(--chess-light); }
+.checkers-cell.dark { background-color: var(--chess-dark); }
+
+.checkers-cell.selected {
+  box-shadow: inset 0 0 0 4px #fbbf24;
+}
+
+.checkers-cell.has-move::after {
+  content: '';
+  position: absolute;
+  width: 24%;
+  height: 24%;
+  background: #3b82f6;
+  border-radius: 50%;
+  box-shadow: 0 0 8px #3b82f6;
+}
+
+.checkers-cell.has-jump::after {
+  content: '';
+  position: absolute;
+  width: 75%;
+  height: 75%;
+  border: 3.5px dashed #ef4444;
+  border-radius: 50%;
+  animation: jump-hint 1s infinite alternate;
+}
+
+@keyframes jump-hint {
+  from { transform: scale(0.9); opacity: 0.7; }
+  to { transform: scale(1.05); opacity: 1; }
+}
+
+.checkers-piece {
+  position: relative;
+  width: 78%;
+  height: 78%;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+  z-index: 5;
+  transition: transform 0.15s ease;
+}
+
+.piece-white {
+  background: radial-gradient(circle at 35% 35%, #fca5a5, #dc2626 75%);
+  border: 2px solid #b91c1c;
+}
+
+.piece-black {
+  background: radial-gradient(circle at 35% 35%, #475569, #0f172a 75%);
+  border: 2px solid #1e293b;
+}
+
+.king-crown {
+  font-size: clamp(1rem, 2.5vmin, 1.4rem);
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.6));
+}

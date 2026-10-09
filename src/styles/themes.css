@@ -1,0 +1,145 @@
+/* =========================================================
+   CHESSVERSE THEMES (CỔ ĐIỂN, CYBERPUNK, ZEN THỦY MẶC, MIDNIGHT)
+   ========================================================= */
+
+:root,
+[data-theme="classic"] {
+  --bg-primary: #12151c;
+  --bg-secondary: #1a1f2b;
+  --bg-tertiary: #232b3b;
+  --bg-card: rgba(30, 39, 56, 0.7);
+  --border-color: rgba(212, 175, 55, 0.25);
+  --border-focus: #e5b85c;
+  --text-main: #f8fafc;
+  --text-muted: #94a3b8;
+  --accent-gold: #e5b85c;
+  --accent-glow: rgba(229, 184, 92, 0.4);
+
+  /* Chess squares */
+  --chess-light: #ece0c8;
+  --chess-dark: #a07855;
+  --chess-border: #5a3e28;
+  --chess-selected: rgba(234, 179, 8, 0.55);
+  --chess-hint: rgba(59, 130, 246, 0.4);
+
+  /* Xiangqi board */
+  --xq-board-bg: #dfb17b;
+  --xq-line-color: #5c3411;
+  --xq-river-color: rgba(92, 52, 17, 0.15);
+  --xq-token-bg: #edd3ad;
+  --xq-token-border: #7c471b;
+
+  /* Caro board */
+  --caro-bg: #dfaf76;
+  --caro-line: #6b4317;
+
+  /* Othello board */
+  --oth-bg: #1c6b3e;
+  --oth-line: #134e2c;
+
+  /* Co Ganh board */
+  --cg-bg: #cda270;
+  --cg-line: #522f13;
+}
+
+[data-theme="cyberpunk"] {
+  --bg-primary: #080914;
+  --bg-secondary: #0f1226;
+  --bg-tertiary: #191c3d;
+  --bg-card: rgba(18, 22, 50, 0.75);
+  --border-color: rgba(0, 242, 254, 0.3);
+  --border-focus: #00f2fe;
+  --text-main: #f0fdf4;
+  --text-muted: #818cf8;
+  --accent-gold: #00f2fe;
+  --accent-glow: rgba(0, 242, 254, 0.5);
+
+  --chess-light: #1e294b;
+  --chess-dark: #0f152a;
+  --chess-border: #00f2fe;
+  --chess-selected: rgba(254, 1, 154, 0.5);
+  --chess-hint: rgba(0, 242, 254, 0.5);
+
+  --xq-board-bg: #111633;
+  --xq-line-color: #00f2fe;
+  --xq-river-color: rgba(0, 242, 254, 0.1);
+  --xq-token-bg: #1e2242;
+  --xq-token-border: #00f2fe;
+
+  --caro-bg: #101633;
+  --caro-line: #00f2fe;
+
+  --oth-bg: #0b1a2b;
+  --oth-line: #00e5ff;
+
+  --cg-bg: #0d122b;
+  --cg-line: #ff007f;
+}
+
+[data-theme="zen"] {
+  --bg-primary: #1e2326;
+  --bg-secondary: #262c30;
+  --bg-tertiary: #30383e;
+  --bg-card: rgba(38, 44, 48, 0.75);
+  --border-color: rgba(94, 179, 131, 0.25);
+  --border-focus: #5eb383;
+  --text-main: #f5f5f0;
+  --text-muted: #9aa8a0;
+  --accent-gold: #5eb383;
+  --accent-glow: rgba(94, 179, 131, 0.4);
+
+  --chess-light: #e5dec9;
+  --chess-dark: #7b8f80;
+  --chess-border: #3c4b40;
+  --chess-selected: rgba(94, 179, 131, 0.6);
+  --chess-hint: rgba(94, 179, 131, 0.4);
+
+  --xq-board-bg: #ebe2cf;
+  --xq-line-color: #424944;
+  --xq-river-color: rgba(66, 73, 68, 0.12);
+  --xq-token-bg: #f9f6ed;
+  --xq-token-border: #424944;
+
+  --caro-bg: #eae3d2;
+  --caro-line: #4a544e;
+
+  --oth-bg: #274736;
+  --oth-line: #1c3327;
+
+  --cg-bg: #e6dfce;
+  --cg-line: #424a44;
+}
+
+[data-theme="midnight"] {
+  --bg-primary: #090b10;
+  --bg-secondary: #111420;
+  --bg-tertiary: #191e30;
+  --bg-card: rgba(20, 25, 42, 0.75);
+  --border-color: rgba(139, 92, 246, 0.3);
+  --border-focus: #a855f7;
+  --text-main: #f8fafc;
+  --text-muted: #94a3b8;
+  --accent-gold: #a855f7;
+  --accent-glow: rgba(168, 85, 247, 0.45);
+
+  --chess-light: #2c334d;
+  --chess-dark: #161a29;
+  --chess-border: #7c3aed;
+  --chess-selected: rgba(168, 85, 247, 0.6);
+  --chess-hint: rgba(139, 92, 246, 0.4);
+
+  --xq-board-bg: #171b2d;
+  --xq-line-color: #a855f7;
+  --xq-river-color: rgba(168, 85, 247, 0.12);
+  --xq-token-bg: #222740;
+  --xq-token-border: #a855f7;
+
+  --caro-bg: #141829;
+  --caro-line: #8b5cf6;
+
+  --oth-bg: #132035;
+  --oth-line: #3b82f6;
+
+  --cg-bg: #141829;
+  --cg-line: #a855f7;
+}
