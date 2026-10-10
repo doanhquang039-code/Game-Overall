@@ -3,6 +3,7 @@ import { ChessGame } from './chessEngine.js';
 import { CHESS_SVGS } from './chessPieces.js';
 import { sounds } from '../../audio/soundEngine.js';
 import { gameState } from '../../state/gameState.js';
+import { achievements } from '../../state/achievements.js';
 import confetti from 'canvas-confetti';
 
 export class ChessUI {
@@ -287,11 +288,32 @@ export class ChessUI {
     }
   }
 
+  showHint() {
+    if (this.game.isGameOver || this.isAiThinking) return;
+    if (gameState.mode === 'ai' && this.game.turn !== 'w') return;
+
+    const best = this.game.getBestMove('hard');
+    if (!best) return;
+
+    this.selectedSquare = best.from;
+    this.legalMoves = [best];
+    sounds.playCheck();
+    this.renderBoard();
+    if (this.onStatusChange) {
+      const fromCoord = `${String.fromCharCode(97 + best.from.c)}${8 - best.from.r}`;
+      const toCoord = `${String.fromCharCode(97 + best.to.c)}${8 - best.to.r}`;
+      this.onStatusChange(`💡 Mách nước: Di chuyển từ ${fromCoord} đến ${toCoord}!`, false);
+    }
+  }
+
   handleGameOver(winner) {
     if (winner === 'w') {
       sounds.playWin();
       confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 } });
       gameState.recordGameResult('chess', 'win');
+      achievements.unlock('first_win');
+      if (gameState.difficulty === 'hard') achievements.unlock('hard_ai_win');
+      if (gameState.timeControl > 0) achievements.unlock('timed_win');
     } else if (winner === 'b') {
       if (gameState.mode === 'ai') {
         sounds.playLose();
@@ -300,6 +322,7 @@ export class ChessUI {
         sounds.playWin();
         confetti({ particleCount: 80, spread: 60 });
         gameState.recordGameResult('chess', 'win');
+        achievements.unlock('first_win');
       }
     } else {
       gameState.recordGameResult('chess', 'draw');

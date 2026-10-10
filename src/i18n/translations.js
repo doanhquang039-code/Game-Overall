@@ -124,7 +124,19 @@ export const translations = {
     gamesPlayed: 'ván đã đấu',
     resetStats: 'Đặt Lại Thống Kê',
     close: 'Đóng',
-    confirmReset: 'Bạn có chắc muốn xóa toàn bộ lịch sử thành tích không?'
+    confirmReset: 'Bạn có chắc muốn xóa toàn bộ lịch sử thành tích không?',
+
+    // Hint & Store Features
+    hint: 'Mách Nước',
+    achievements: 'Thành Tựu',
+    rematch: 'Đấu Lại',
+    switchGame: 'Đổi Môn Cờ',
+    reviewBoard: 'Xem Lại Bàn Cờ',
+    aboutApp: 'Thông Tin & Bản Quyền',
+    privacyPolicy: 'Chính Sách Bảo Mật',
+    playStoreReady: 'Chuẩn Google Play Store',
+    offlinePlay: 'Chơi Mượt Offline 100%',
+    gameNav: 'Bàn Cờ'
   },
 
   en: {
@@ -250,14 +262,32 @@ export const translations = {
     gamesPlayed: 'matches played',
     resetStats: 'Reset Statistics',
     close: 'Close',
-    confirmReset: 'Are you sure you want to erase all match history?'
+    confirmReset: 'Are you sure you want to erase all match history?',
+
+    // Hint & Store Features
+    hint: 'AI Hint',
+    achievements: 'Achievements',
+    rematch: 'Rematch',
+    switchGame: 'Switch Game',
+    reviewBoard: 'Review Board',
+    aboutApp: 'About & Licenses',
+    privacyPolicy: 'Privacy Policy',
+    playStoreReady: 'Google Play Store Ready',
+    offlinePlay: '100% Offline Capable',
+    gameNav: 'Games'
   }
 };
 
 class I18nManager {
   constructor() {
     this.lang = localStorage.getItem('chessverse_lang') || 'vi';
+    this.translations = translations;
     this.subscribers = [];
+  }
+
+  getGame(gameId) {
+    const langDict = translations[this.lang] || translations.vi;
+    return langDict[gameId] || translations.vi[gameId] || {};
   }
 
   getLang() {

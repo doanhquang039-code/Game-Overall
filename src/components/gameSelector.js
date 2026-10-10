@@ -13,15 +13,15 @@ export function renderGameSelector(container, onSelectGame) {
       </div>
       <div class="game-cards-row">
         ${Object.values(GAME_INFO).map(game => {
-          const gameTrans = i18n.translations[i18n.getLang()][game.id] || game;
+          const gameTrans = i18n.getGame(game.id);
           return `
             <button class="game-card ${gameState.currentGame === game.id ? 'active' : ''}" data-game-id="${game.id}">
               <div class="card-glow"></div>
               <div class="card-icon">${game.icon}</div>
               <div class="card-badge">${game.badge}</div>
               <div class="card-content">
-                <h3 class="card-title">${gameTrans.title}</h3>
-                <p class="card-sub">${gameTrans.tag}</p>
+                <h3 class="card-title">${gameTrans.title || game.title}</h3>
+                <p class="card-sub">${gameTrans.tag || game.tag}</p>
               </div>
             </button>
           `;

@@ -2,6 +2,7 @@
 import { OthelloGame } from './othelloEngine.js';
 import { sounds } from '../../audio/soundEngine.js';
 import { gameState } from '../../state/gameState.js';
+import { achievements } from '../../state/achievements.js';
 import confetti from 'canvas-confetti';
 
 export class OthelloUI {
@@ -180,12 +181,29 @@ export class OthelloUI {
     }
   }
 
+  showHint() {
+    if (this.game.isGameOver || this.isAiThinking) return;
+    if (gameState.mode === 'ai' && this.game.turn !== 'B') return;
+
+    const best = this.game.getBestMove('hard');
+    if (!best) return;
+
+    sounds.playCheck();
+    if (this.onStatusChange) {
+      this.onStatusChange(`💡 Mách nước Cờ Lật: Đặt quân vào hàng ${best.r + 1}, cột ${best.c + 1} để lật được nhiều quân nhất!`, false);
+    }
+  }
+
   handleGameOver(winner) {
     const counts = this.game.getCounts();
     if (winner === 'B') {
       sounds.playWin();
       confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 } });
       gameState.recordGameResult('othello', 'win');
+      achievements.unlock('first_win');
+      achievements.unlock('othello_win');
+      if (gameState.difficulty === 'hard') achievements.unlock('hard_ai_win');
+      if (gameState.timeControl > 0) achievements.unlock('timed_win');
     } else if (winner === 'W') {
       if (gameState.mode === 'ai') {
         sounds.playLose();
@@ -194,6 +212,7 @@ export class OthelloUI {
         sounds.playWin();
         confetti({ particleCount: 80, spread: 60 });
         gameState.recordGameResult('othello', 'win');
+        achievements.unlock('first_win');
       }
     } else {
       gameState.recordGameResult('othello', 'draw');

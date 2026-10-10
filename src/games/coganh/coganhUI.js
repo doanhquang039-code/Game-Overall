@@ -2,6 +2,7 @@
 import { CoGanhGame } from './coganhEngine.js';
 import { sounds } from '../../audio/soundEngine.js';
 import { gameState } from '../../state/gameState.js';
+import { achievements } from '../../state/achievements.js';
 import confetti from 'canvas-confetti';
 
 export class CoGanhUI {
@@ -241,11 +242,31 @@ export class CoGanhUI {
     }
   }
 
+  showHint() {
+    if (this.game.isGameOver || this.isAiThinking) return;
+    if (gameState.mode === 'ai' && this.game.turn !== 'B') return;
+
+    const best = this.game.getBestMove('hard');
+    if (!best) return;
+
+    this.selectedSquare = best.from;
+    this.legalMoves = [best.to];
+    sounds.playCheck();
+    this.renderBoard();
+    if (this.onStatusChange) {
+      this.onStatusChange('💡 Mách nước Cờ Gánh: Quân cờ và vị trí đi tiềm năng đã được đánh dấu!', false);
+    }
+  }
+
   handleGameOver(winner) {
     if (winner === 'B') {
       sounds.playWin();
       confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 } });
       gameState.recordGameResult('coganh', 'win');
+      achievements.unlock('first_win');
+      achievements.unlock('coganh_win');
+      if (gameState.difficulty === 'hard') achievements.unlock('hard_ai_win');
+      if (gameState.timeControl > 0) achievements.unlock('timed_win');
     } else if (winner === 'R') {
       if (gameState.mode === 'ai') {
         sounds.playLose();
@@ -254,6 +275,7 @@ export class CoGanhUI {
         sounds.playWin();
         confetti({ particleCount: 80, spread: 60 });
         gameState.recordGameResult('coganh', 'win');
+        achievements.unlock('first_win');
       }
     } else {
       gameState.recordGameResult('coganh', 'draw');

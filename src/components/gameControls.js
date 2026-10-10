@@ -35,6 +35,10 @@ export function renderGameControls(container, handlers) {
 
       <!-- Center: Action Buttons -->
       <div class="control-group actions-group">
+        <button class="action-btn hint-btn" id="btn-hint" title="${t('hint')}">
+          <span class="btn-icon">💡</span>
+          <span>${t('hint')}</span>
+        </button>
         <button class="action-btn undo-btn" id="btn-undo" title="${t('undo')}">
           <span class="btn-icon">↩️</span>
           <span>${t('undo')}</span>
@@ -84,10 +88,16 @@ export function renderGameControls(container, handlers) {
           <span>Android / ĐT</span>
         </button>
 
-        <!-- Settings Modal Button -->
-        <button class="action-btn secondary-btn" id="btn-settings" title="${t('settings')}">
-          <span class="btn-icon">⚙️</span>
-          <span>${t('settings')}</span>
+        <!-- Achievements modal button -->
+        <button class="action-btn secondary-btn" id="btn-achievements" title="${t('achievements')}">
+          <span class="btn-icon">🏆</span>
+          <span>${t('achievements')}</span>
+        </button>
+
+        <!-- Stats modal button -->
+        <button class="action-btn secondary-btn" id="btn-stats" title="${t('stats')}">
+          <span class="btn-icon">📊</span>
+          <span>${t('stats')}</span>
         </button>
 
         <!-- Rules modal button -->
@@ -96,10 +106,15 @@ export function renderGameControls(container, handlers) {
           <span>${t('rules')}</span>
         </button>
 
-        <!-- Stats modal button -->
-        <button class="action-btn secondary-btn" id="btn-stats" title="${t('stats')}">
-          <span class="btn-icon">🏆</span>
-          <span>${t('stats')}</span>
+        <!-- Settings Modal Button -->
+        <button class="action-btn secondary-btn" id="btn-settings" title="${t('settings')}">
+          <span class="btn-icon">⚙️</span>
+          <span>${t('settings')}</span>
+        </button>
+
+        <!-- About Modal Button -->
+        <button class="icon-btn" id="btn-about" title="${t('aboutApp')}">
+          <span>ℹ️</span>
         </button>
       </div>
     </div>
@@ -129,6 +144,9 @@ export function renderGameControls(container, handlers) {
       gameState.setDifficulty(e.target.value);
     });
   }
+
+  const hintBtn = container.querySelector('#btn-hint');
+  if (hintBtn) hintBtn.addEventListener('click', () => handlers.onHint && handlers.onHint());
 
   const undoBtn = container.querySelector('#btn-undo');
   if (undoBtn) undoBtn.addEventListener('click', () => handlers.onUndo && handlers.onUndo());
@@ -182,6 +200,9 @@ export function renderGameControls(container, handlers) {
   const mobileBtn = container.querySelector('#btn-mobile');
   if (mobileBtn) mobileBtn.addEventListener('click', () => handlers.onShowMobile && handlers.onShowMobile());
 
+  const achievementsBtn = container.querySelector('#btn-achievements');
+  if (achievementsBtn) achievementsBtn.addEventListener('click', () => handlers.onShowAchievements && handlers.onShowAchievements());
+
   const settingsBtn = container.querySelector('#btn-settings');
   if (settingsBtn) settingsBtn.addEventListener('click', () => handlers.onShowSettings && handlers.onShowSettings());
 
@@ -190,4 +211,7 @@ export function renderGameControls(container, handlers) {
 
   const statsBtn = container.querySelector('#btn-stats');
   if (statsBtn) statsBtn.addEventListener('click', () => handlers.onShowStats && handlers.onShowStats());
+
+  const aboutBtn = container.querySelector('#btn-about');
+  if (aboutBtn) aboutBtn.addEventListener('click', () => handlers.onShowAbout && handlers.onShowAbout());
 }

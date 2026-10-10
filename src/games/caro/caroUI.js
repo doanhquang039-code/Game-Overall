@@ -2,6 +2,7 @@
 import { CaroGame, CARO_BOARD_SIZE } from './caroEngine.js';
 import { sounds } from '../../audio/soundEngine.js';
 import { gameState } from '../../state/gameState.js';
+import { achievements } from '../../state/achievements.js';
 import confetti from 'canvas-confetti';
 
 export class CaroUI {
@@ -176,11 +177,28 @@ export class CaroUI {
     }
   }
 
+  showHint() {
+    if (this.game.isGameOver || this.isAiThinking) return;
+    if (gameState.mode === 'ai' && this.game.turn !== 'X') return;
+
+    const best = this.game.getBestMove('hard');
+    if (!best) return;
+
+    sounds.playCheck();
+    if (this.onStatusChange) {
+      this.onStatusChange(`💡 Mách nước Caro: Nên đặt cờ vào ô hàng ${best.r + 1}, cột ${best.c + 1}!`, false);
+    }
+  }
+
   handleGameOver(winner) {
     if (winner === 'X') {
       sounds.playWin();
       confetti({ particleCount: 110, spread: 80, origin: { y: 0.6 } });
       gameState.recordGameResult('caro', 'win');
+      achievements.unlock('first_win');
+      achievements.unlock('caro_win');
+      if (gameState.difficulty === 'hard') achievements.unlock('hard_ai_win');
+      if (gameState.timeControl > 0) achievements.unlock('timed_win');
     } else if (winner === 'O') {
       if (gameState.mode === 'ai') {
         sounds.playLose();
@@ -189,6 +207,7 @@ export class CaroUI {
         sounds.playWin();
         confetti({ particleCount: 80, spread: 60 });
         gameState.recordGameResult('caro', 'win');
+        achievements.unlock('first_win');
       }
     } else {
       gameState.recordGameResult('caro', 'draw');

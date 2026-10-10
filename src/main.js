@@ -2,12 +2,17 @@
 import './styles/main.css';
 import { gameState, GAME_INFO } from './state/gameState.js';
 import { i18n } from './i18n/translations.js';
+import { achievements } from './state/achievements.js';
 import { renderGameSelector } from './components/gameSelector.js';
 import { renderGameControls } from './components/gameControls.js';
 import { showRulesModal } from './components/rulesModal.js';
 import { showStatsModal } from './components/statsModal.js';
 import { showSettingsModal } from './components/settingsModal.js';
 import { showMobileModal } from './components/mobileModal.js';
+import { showAchievementsModal } from './components/achievementsModal.js';
+import { showAboutModal } from './components/aboutModal.js';
+import { showGameOverModal } from './components/gameOverModal.js';
+import { renderMobileNav } from './components/mobileNav.js';
 
 import { ChessUI } from './games/chess/chessUI.js';
 import { XiangqiUI } from './games/xiangqi/xiangqiUI.js';
@@ -43,12 +48,13 @@ class ChessverseApp {
     this.renderSkeleton();
     this.setupControls();
     this.setupSelector();
+    this.setupMobileNav();
     this.switchGame(gameState.currentGame);
   }
 
   renderSkeleton() {
     const t = (k) => i18n.t(k);
-    const gameTrans = i18n.translations[i18n.getLang()][gameState.currentGame] || GAME_INFO[gameState.currentGame];
+    const gameTrans = i18n.getGame(gameState.currentGame);
 
     this.appEl.innerHTML = `
       <!-- Header -->
@@ -89,6 +95,9 @@ class ChessverseApp {
         <!-- Active Game Stage Board -->
         <section class="game-stage-container" id="game-stage"></section>
       </main>
+
+      <!-- Mobile Bottom Navigation Dock (Google Play Store Mobile UX) -->
+      <div id="mobile-nav-root"></div>
     `;
   }
 
@@ -102,6 +111,7 @@ class ChessverseApp {
   setupControls() {
     const controlsContainer = document.getElementById('game-controls-container');
     renderGameControls(controlsContainer, {
+      onHint: () => this.triggerHint(),
       onUndo: () => {
         if (this.currentUI && this.currentUI.undo) {
           this.currentUI.undo();
@@ -123,22 +133,66 @@ class ChessverseApp {
       onShowStats: () => {
         showStatsModal();
       },
+      onShowAchievements: () => {
+        showAchievementsModal();
+      },
       onShowMobile: () => {
         showMobileModal();
+      },
+      onShowAbout: () => {
+        showAboutModal();
       },
       onShowSettings: () => {
         showSettingsModal(() => {
           this.updateTexts();
           this.setupControls();
           this.setupSelector();
+          this.setupMobileNav();
         });
       }
     });
   }
 
+  setupMobileNav() {
+    const navRoot = document.getElementById('mobile-nav-root');
+    if (!navRoot) return;
+    renderMobileNav(navRoot, {
+      onShowGames: () => {
+        const selectorEl = document.getElementById('game-selector-container');
+        if (selectorEl) {
+          selectorEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+      },
+      onHint: () => this.triggerHint(),
+      onUndo: () => {
+        if (this.currentUI && this.currentUI.undo) this.currentUI.undo();
+      },
+      onReset: () => {
+        if (this.currentUI && this.currentUI.reset) this.currentUI.reset();
+      },
+      onShowAchievements: () => showAchievementsModal(),
+      onShowSettings: () => {
+        showSettingsModal(() => {
+          this.updateTexts();
+          this.setupControls();
+          this.setupSelector();
+          this.setupMobileNav();
+        });
+      }
+    });
+  }
+
+  triggerHint() {
+    if (this.currentUI && typeof this.currentUI.showHint === 'function') {
+      this.currentUI.showHint();
+    } else {
+      this.updateStatusBanner('💡 Chưa có gợi ý cho tình huống này!');
+    }
+  }
+
   updateTexts() {
     const t = (k) => i18n.t(k);
-    const gameTrans = i18n.translations[i18n.getLang()][gameState.currentGame] || GAME_INFO[gameState.currentGame];
+    const gameTrans = i18n.getGame(gameState.currentGame);
 
     const logoTitle = document.getElementById('app-logo-title');
     const logoTagline = document.getElementById('app-logo-tagline');
@@ -146,11 +200,12 @@ class ChessverseApp {
 
     if (logoTitle) logoTitle.textContent = t('appTitle');
     if (logoTagline) logoTagline.textContent = t('appTagline');
-    if (headerTitle) headerTitle.textContent = gameTrans.title;
+    if (headerTitle) headerTitle.textContent = gameTrans.title || GAME_INFO[gameState.currentGame].title;
 
-    // Refresh controls & selector with new language
+    // Refresh controls, selector & mobile nav with new language
     this.setupControls();
     this.setupSelector();
+    this.setupMobileNav();
   }
 
   updateClockDisplay(times) {
@@ -181,10 +236,10 @@ class ChessverseApp {
 
     gameState.setGame(gameId);
 
-    const gameTrans = i18n.translations[i18n.getLang()][gameId] || GAME_INFO[gameId];
+    const gameTrans = i18n.getGame(gameId);
     const headerTitle = document.getElementById('header-active-game');
     if (headerTitle) {
-      headerTitle.textContent = gameTrans.title;
+      headerTitle.textContent = gameTrans.title || GAME_INFO[gameId].title;
     }
 
     const stageEl = document.getElementById('game-stage');
@@ -193,6 +248,9 @@ class ChessverseApp {
     const onStatusChange = (msg, isGameOver = false) => {
       this.updateStatusBanner(msg, isGameOver);
     };
+
+    // Record game played for multi-game master achievement
+    achievements.recordGamePlay(gameId);
 
     // Instantiate appropriate game UI
     switch (gameId) {
@@ -234,6 +292,14 @@ class ChessverseApp {
     if (isGameOver) {
       banner.classList.add('game-over');
       if (statusIcon) statusIcon.textContent = '🏆';
+      setTimeout(() => {
+        const winner = this.currentUI?.game?.winner || 'p1';
+        showGameOverModal({
+          winner,
+          gameId: gameState.currentGame,
+          onRematch: () => this.currentUI?.reset?.()
+        });
+      }, 750);
     } else {
       banner.classList.remove('game-over');
       if (statusIcon) statusIcon.textContent = '⚡';

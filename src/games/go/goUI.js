@@ -2,6 +2,7 @@
 import { GoGame, GO_BOARD_SIZE } from './goEngine.js';
 import { sounds } from '../../audio/soundEngine.js';
 import { gameState } from '../../state/gameState.js';
+import { achievements } from '../../state/achievements.js';
 import { i18n } from '../../i18n/translations.js';
 import confetti from 'canvas-confetti';
 
@@ -11,6 +12,7 @@ export class GoUI {
     this.onStatusChange = onStatusChange;
     this.game = new GoGame(GO_BOARD_SIZE);
     this.isAiThinking = false;
+    this.hintPosition = null;
 
     this.render();
   }
@@ -18,6 +20,7 @@ export class GoUI {
   reset() {
     this.game.reset();
     this.isAiThinking = false;
+    this.hintPosition = null;
     this.renderBoard();
     this.updateStatus();
   }
@@ -122,9 +125,17 @@ export class GoUI {
           const stoneEl = document.createElement('div');
           stoneEl.className = `go-stone stone-${stone.toLowerCase()}`;
           cell.appendChild(stoneEl);
+        } else if (this.hintPosition && this.hintPosition.r === r && this.hintPosition.c === c) {
+          cell.classList.add('has-hint');
+          const hintMarker = document.createElement('div');
+          hintMarker.className = 'go-hint-pulse';
+          cell.appendChild(hintMarker);
         }
 
-        cell.addEventListener('click', () => this.handleCellClick(r, c));
+        cell.addEventListener('click', () => {
+          this.hintPosition = null;
+          this.handleCellClick(r, c);
+        });
         boardEl.appendChild(cell);
       }
     }
@@ -201,11 +212,30 @@ export class GoUI {
     }
   }
 
+  showHint() {
+    if (this.game.isGameOver || this.isAiThinking) return;
+    if (gameState.mode === 'ai' && this.game.turn !== 'B') return;
+
+    const best = this.game.getBestMove('hard');
+    if (!best) return;
+
+    this.hintPosition = { r: best.r, c: best.c };
+    sounds.playHint();
+    this.renderBoard();
+    if (this.onStatusChange) {
+      this.onStatusChange(`💡 Mách nước Cờ Vây: Gợi ý đặt quân tại hàng ${best.r + 1}, cột ${best.c + 1}!`, false);
+    }
+  }
+
   handleGameOver(winner) {
     if (winner === 'B') {
       sounds.playWin();
       confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 } });
       gameState.recordGameResult('go', 'win');
+      achievements.unlock('first_win');
+      achievements.unlock('go_win');
+      if (gameState.difficulty === 'hard') achievements.unlock('hard_ai_win');
+      if (gameState.timeControl > 0) achievements.unlock('timed_win');
     } else if (winner === 'W') {
       if (gameState.mode === 'ai') {
         sounds.playLose();
@@ -214,6 +244,7 @@ export class GoUI {
         sounds.playWin();
         confetti({ particleCount: 80, spread: 60 });
         gameState.recordGameResult('go', 'win');
+        achievements.unlock('first_win');
       }
     } else {
       gameState.recordGameResult('go', 'draw');

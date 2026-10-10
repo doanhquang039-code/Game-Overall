@@ -2,6 +2,7 @@
 import { gameState } from '../state/gameState.js';
 import { i18n } from '../i18n/translations.js';
 import { sounds } from '../audio/soundEngine.js';
+import { showAboutModal } from './aboutModal.js';
 
 export function showSettingsModal(onApplied) {
   let modal = document.getElementById('settings-modal-backdrop');
@@ -115,6 +116,19 @@ export function showSettingsModal(onApplied) {
             </select>
           </div>
         </div>
+        <!-- 7. Google Play Store Compliance & Privacy -->
+        <div class="setting-item store-policy-item">
+          <div class="setting-label-col">
+            <label class="setting-title">📜 ${t('privacyPolicy') || 'Chính Sách Bảo Mật'} & Bản Quyền</label>
+            <span class="setting-desc">100% Offline, bảo mật an toàn cho trẻ em & mọi lứa tuổi</span>
+          </div>
+          <div class="setting-control-col">
+            <button class="action-btn secondary-btn" id="btn-open-privacy" type="button">
+              <span>ℹ️</span>
+              <span>${t('aboutApp') || 'Xem Chi Tiết'}</span>
+            </button>
+          </div>
+        </div>
       </div>
 
       <div class="modal-footer">
@@ -136,6 +150,9 @@ export function showSettingsModal(onApplied) {
 
   const close = () => modal.classList.remove('visible');
   modal.querySelector('#settings-close').addEventListener('click', close);
+  modal.querySelector('#btn-open-privacy')?.addEventListener('click', () => {
+    showAboutModal();
+  });
   modal.addEventListener('click', (e) => {
     if (e.target === modal) close();
   });

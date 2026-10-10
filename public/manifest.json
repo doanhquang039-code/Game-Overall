@@ -6,13 +6,32 @@
   "orientation": "any",
   "background_color": "#12151c",
   "theme_color": "#12151c",
-  "description": "Đại sảnh 7 môn kỳ nghệ đỉnh cao: Cờ Vua, Cờ Tướng, Cờ Caro, Cờ Lật, Cờ Gánh, Cờ Vây và Cờ Đam.",
+  "lang": "vi",
+  "categories": ["games", "board", "entertainment"],
+  "description": "Đại sảnh 7 môn kỳ nghệ đỉnh cao: Cờ Vua, Cờ Tướng, Cờ Caro, Cờ Lật, Cờ Gánh, Cờ Vây và Cờ Đam. Chơi mượt mà offline không cần mạng.",
   "icons": [
     {
       "src": "./favicon.svg",
       "sizes": "192x192 512x512",
       "type": "image/svg+xml",
       "purpose": "any maskable"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Cờ Vua (Chess)",
+      "url": "./index.html?game=chess",
+      "description": "Chơi Cờ Vua Quốc Tế"
+    },
+    {
+      "name": "Cờ Tướng (Xiangqi)",
+      "url": "./index.html?game=xiangqi",
+      "description": "Chơi Cờ Tướng Phương Đông"
+    },
+    {
+      "name": "Cờ Caro (Gomoku)",
+      "url": "./index.html?game=caro",
+      "description": "Chơi Cờ Caro 15x15"
     }
   ]
 }

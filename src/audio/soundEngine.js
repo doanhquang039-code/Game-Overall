@@ -30,8 +30,17 @@ class SoundEngine {
     return this.muted;
   }
 
+  vibrate(pattern = 15) {
+    if (typeof navigator !== 'undefined' && navigator.vibrate) {
+      try {
+        navigator.vibrate(pattern);
+      } catch (e) {}
+    }
+  }
+
   // Realistic piece place sound (wood/stone click)
   playMove() {
+    this.vibrate(15);
     if (this.muted) return;
     this.init();
     if (!this.ctx) return;
@@ -63,6 +72,7 @@ class SoundEngine {
 
   // Capture sound (heavier, snappier thud)
   playCapture() {
+    this.vibrate([25, 40, 25]);
     if (this.muted) return;
     this.init();
     if (!this.ctx) return;
@@ -101,6 +111,7 @@ class SoundEngine {
 
   // Check / Tension alert
   playCheck() {
+    this.vibrate(60);
     if (this.muted) return;
     this.init();
     if (!this.ctx) return;
@@ -126,6 +137,7 @@ class SoundEngine {
 
   // Victorious fanfare
   playWin() {
+    this.vibrate([100, 50, 100, 50, 200]);
     if (this.muted) return;
     this.init();
     if (!this.ctx) return;
@@ -233,6 +245,32 @@ class SoundEngine {
 
     osc.start(t);
     osc.stop(t + 0.13);
+  }
+
+  // AI Hint chime sound
+  playHint() {
+    this.vibrate(35);
+    if (this.muted) return;
+    this.init();
+    if (!this.ctx) return;
+
+    const t = this.ctx.currentTime;
+    [587.33, 880].forEach((freq, idx) => {
+      const osc = this.ctx.createOscillator();
+      const gain = this.ctx.createGain();
+
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(freq, t + idx * 0.08);
+
+      gain.gain.setValueAtTime(0.22 * this.volume, t + idx * 0.08);
+      gain.gain.exponentialRampToValueAtTime(0.001, t + 0.35 + idx * 0.08);
+
+      osc.connect(gain);
+      gain.connect(this.ctx.destination);
+
+      osc.start(t + idx * 0.08);
+      osc.stop(t + 0.4 + idx * 0.08);
+    });
   }
 }
 

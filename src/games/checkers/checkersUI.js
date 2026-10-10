@@ -2,6 +2,7 @@
 import { CheckersGame } from './checkersEngine.js';
 import { sounds } from '../../audio/soundEngine.js';
 import { gameState } from '../../state/gameState.js';
+import { achievements } from '../../state/achievements.js';
 import confetti from 'canvas-confetti';
 
 export class CheckersUI {
@@ -226,11 +227,31 @@ export class CheckersUI {
     }
   }
 
+  showHint() {
+    if (this.game.isGameOver || this.isAiThinking) return;
+    if (gameState.mode === 'ai' && this.game.turn !== 'w') return;
+
+    const best = this.game.getBestMove('hard');
+    if (!best) return;
+
+    this.selectedSquare = best.from;
+    this.legalMoves = [best];
+    sounds.playHint();
+    this.renderBoard();
+    if (this.onStatusChange) {
+      this.onStatusChange(`💡 Mách nước Cờ Đam: Di chuyển từ hàng ${best.from.r + 1}, cột ${best.from.c + 1} tới hàng ${best.to.r + 1}, cột ${best.to.c + 1}!`, false);
+    }
+  }
+
   handleGameOver(winner) {
     if (winner === 'w') {
       sounds.playWin();
       confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 } });
       gameState.recordGameResult('checkers', 'win');
+      achievements.unlock('first_win');
+      achievements.unlock('checkers_win');
+      if (gameState.difficulty === 'hard') achievements.unlock('hard_ai_win');
+      if (gameState.timeControl > 0) achievements.unlock('timed_win');
     } else if (winner === 'b') {
       if (gameState.mode === 'ai') {
         sounds.playLose();
@@ -239,6 +260,7 @@ export class CheckersUI {
         sounds.playWin();
         confetti({ particleCount: 80, spread: 60 });
         gameState.recordGameResult('checkers', 'win');
+        achievements.unlock('first_win');
       }
     } else {
       gameState.recordGameResult('checkers', 'draw');

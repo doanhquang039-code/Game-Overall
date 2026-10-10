@@ -339,6 +339,17 @@ body {
   transition: all 0.2s ease;
 }
 
+.hint-btn {
+  background: linear-gradient(135deg, #f59e0b, #d97706);
+  color: #ffffff;
+  box-shadow: 0 4px 12px rgba(245, 158, 11, 0.35);
+}
+
+.hint-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 18px rgba(245, 158, 11, 0.55);
+}
+
 .undo-btn {
   background: var(--bg-tertiary);
   color: var(--text-main);
@@ -950,3 +961,398 @@ input:checked + .slider-round:before {
   border-radius: 4px;
   color: #fbbf24;
 }
+
+/* =========================================================
+   STORE READY BADGE & GAME OVER DIALOG
+   ========================================================= */
+.store-badge-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: linear-gradient(135deg, rgba(229, 184, 92, 0.2), rgba(16, 185, 129, 0.2));
+  color: var(--accent-gold);
+  border: 1px solid var(--border-color);
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.8px;
+  text-transform: uppercase;
+  margin-bottom: 8px;
+}
+
+.game-over-dialog {
+  max-width: 480px;
+  width: 92%;
+  background: var(--bg-secondary);
+  border: 1px solid var(--accent-gold);
+  border-radius: 20px;
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.7), 0 0 25px rgba(229, 184, 92, 0.25);
+  padding: 28px 24px 24px;
+  text-align: center;
+  animation: modal-pop 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.victory-emblem {
+  font-size: 3.4rem;
+  margin-bottom: 6px;
+  filter: drop-shadow(0 6px 16px rgba(229, 184, 92, 0.5));
+  animation: emblem-float 2s infinite ease-in-out alternate;
+}
+
+@keyframes emblem-float {
+  0% { transform: translateY(0) scale(1); }
+  100% { transform: translateY(-6px) scale(1.05); }
+}
+
+.victory-title {
+  font-family: 'Cinzel', serif;
+  font-size: 1.55rem;
+  font-weight: 900;
+  color: var(--accent-gold);
+  margin-bottom: 6px;
+}
+
+.victory-subtitle {
+  font-size: 0.88rem;
+  color: var(--text-muted);
+  line-height: 1.45;
+  margin-bottom: 16px;
+}
+
+.game-over-card {
+  background: var(--bg-tertiary);
+  border: 1px solid var(--border-color);
+  border-radius: 14px;
+  padding: 14px 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.game-over-stat-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.86rem;
+}
+
+.stat-label {
+  color: var(--text-muted);
+  font-weight: 500;
+}
+
+.stat-val.highlight {
+  color: var(--accent-gold);
+  font-weight: 700;
+}
+
+.stat-val.text-win {
+  color: #10b981;
+  font-weight: 700;
+}
+
+.game-over-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.btn-large {
+  padding: 12px 20px;
+  font-size: 1rem;
+  justify-content: center;
+  box-shadow: 0 4px 16px var(--accent-glow);
+}
+
+/* =========================================================
+   ABOUT & PRIVACY POLICY DIALOG
+   ========================================================= */
+.about-dialog {
+  max-width: 580px;
+  width: 94%;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: 20px;
+  box-shadow: 0 20px 48px rgba(0, 0, 0, 0.7);
+  padding: 24px;
+  max-height: 88vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.about-body {
+  overflow-y: auto;
+  padding-right: 6px;
+  margin: 16px 0;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.about-highlight-card {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  background: var(--bg-tertiary);
+  border: 1px solid var(--border-color);
+  border-radius: 14px;
+  padding: 14px 16px;
+}
+
+.highlight-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+.hl-icon {
+  font-size: 1.5rem;
+  flex-shrink: 0;
+}
+
+.highlight-item strong {
+  font-size: 0.92rem;
+  color: var(--accent-gold);
+}
+
+.highlight-item p {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  margin-top: 2px;
+  line-height: 1.4;
+}
+
+.privacy-section {
+  background: var(--bg-primary);
+  border: 1px solid var(--border-color);
+  border-radius: 14px;
+  padding: 16px;
+}
+
+.privacy-title {
+  font-size: 0.95rem;
+  color: var(--text-main);
+  margin-bottom: 10px;
+}
+
+.privacy-content p {
+  font-size: 0.82rem;
+  color: var(--text-muted);
+  line-height: 1.55;
+  margin-bottom: 8px;
+}
+
+.privacy-content strong {
+  color: var(--text-main);
+}
+
+.dev-credits {
+  font-size: 0.76rem;
+  color: var(--text-muted);
+  padding: 8px 0;
+  border-top: 1px solid var(--border-color);
+}
+
+.credit-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.credit-tag {
+  background: rgba(16, 185, 129, 0.15);
+  color: #10b981;
+  padding: 2px 8px;
+  border-radius: 6px;
+  font-weight: 700;
+}
+
+/* =========================================================
+   MOBILE BOTTOM NAVIGATION DOCK (STORE APP STANDARD)
+   ========================================================= */
+.mobile-bottom-dock {
+  display: none; /* hidden on wide desktop, shown on mobile */
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: rgba(18, 21, 28, 0.92);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+  border-top: 1px solid var(--border-color);
+  padding: 8px 12px calc(8px + env(safe-area-inset-bottom));
+  z-index: 90;
+  justify-content: space-around;
+  align-items: center;
+  box-shadow: 0 -8px 24px rgba(0, 0, 0, 0.45);
+}
+
+.dock-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+  background: none;
+  border: none;
+  color: var(--text-muted);
+  cursor: pointer;
+  padding: 6px 10px;
+  border-radius: 12px;
+  transition: all 0.2s ease;
+  min-width: 54px;
+  touch-action: manipulation;
+}
+
+.dock-item:active {
+  transform: scale(0.92);
+}
+
+.dock-icon {
+  font-size: 1.35rem;
+  line-height: 1;
+}
+
+.pulse-badge {
+  animation: pulse-hint 1.8s infinite;
+}
+
+@keyframes pulse-hint {
+  0%, 100% { transform: scale(1); filter: drop-shadow(0 0 2px rgba(245, 158, 11, 0.3)); }
+  50% { transform: scale(1.15); filter: drop-shadow(0 0 8px rgba(245, 158, 11, 0.8)); }
+}
+
+.dock-label {
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.2px;
+}
+
+.dock-item:hover,
+.dock-item:focus {
+  color: var(--accent-gold);
+}
+
+/* =========================================================
+   RESPONSIVE DESIGN & MOBILE OPTIMIZATIONS
+   ========================================================= */
+@media (max-width: 860px) {
+  /* Show mobile bottom dock */
+  .mobile-bottom-dock {
+    display: flex;
+  }
+
+  /* Add bottom padding so boards & buttons aren't covered by bottom dock */
+  .main-layout {
+    padding: 12px 14px calc(76px + env(safe-area-inset-bottom));
+    gap: 12px;
+  }
+
+  .app-header {
+    padding: 10px 16px;
+  }
+
+  .logo-emblem {
+    width: 38px;
+    height: 38px;
+    font-size: 1.35rem;
+  }
+
+  .logo-title {
+    font-size: 1.2rem;
+  }
+
+  .logo-tagline {
+    font-size: 0.68rem;
+  }
+
+  /* Controls Toolbar wrap smoothly */
+  .controls-toolbar {
+    padding: 8px 12px;
+    gap: 8px;
+  }
+
+  .action-btn,
+  .pill-btn {
+    padding: 7px 11px;
+    font-size: 0.8rem;
+  }
+}
+
+@media (max-width: 640px) {
+  .app-header {
+    flex-wrap: nowrap;
+    gap: 8px;
+  }
+
+  .header-right-group {
+    gap: 6px;
+  }
+
+  .header-status-badge {
+    padding: 4px 10px;
+    font-size: 0.78rem;
+  }
+
+  .header-clock-badge {
+    padding: 4px 10px;
+    font-size: 0.78rem;
+  }
+
+  /* Game selector: horizontal snap swipe on small mobile screens */
+  .game-selector-grid {
+    display: flex;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    gap: 10px;
+    padding-bottom: 6px;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: thin;
+  }
+
+  .game-card {
+    min-width: 145px;
+    flex-shrink: 0;
+    scroll-snap-align: start;
+    padding: 12px 10px;
+  }
+
+  .card-icon {
+    font-size: 1.5rem;
+  }
+
+  .card-title {
+    font-size: 0.84rem;
+  }
+
+  /* Toolbar buttons on mobile phone */
+  .actions-group {
+    width: 100%;
+    justify-content: space-around;
+  }
+
+  .utils-group {
+    width: 100%;
+    justify-content: flex-end;
+  }
+
+  .control-group {
+    gap: 6px;
+  }
+
+  /* Status banner */
+  .status-banner {
+    padding: 8px 12px;
+    font-size: 0.84rem;
+  }
+
+  /* Safe touch targets */
+  .icon-btn {
+    min-width: 36px;
+    min-height: 36px;
+  }
+}
+
